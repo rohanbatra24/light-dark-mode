@@ -7,14 +7,8 @@ const image3 = document.getElementById("image3");
 const textBox = document.getElementById("text-box");
 
 // Save theme to local storage
-
 const saveToLocalStorage = (color) => {
   localStorage.setItem("theme", color);
-};
-
-// Update html attributes
-const updateAttributes = (element, attr, value) => {
-  element[attr] = value;
 };
 
 // Dark or light images
@@ -24,27 +18,22 @@ const imageMode = (color) => {
   image3.src = `img/undraw_conceptual_idea_${color}.svg`;
 };
 
-// Dark mode styles
-const darkMode = () => {
-  updateAttributes("nav", "style.backgroundColor", "rgb(0 0 0 / 50%)");
-  //   nav.style.backgroundColor = "rgb(0 0 0 / 50%)";
-  textBox.style.backgroundColor = "rgb(255 255 255 / 50%)";
+const toggleDarkLightMode = (isLight) => {
+  nav.style.backgroundColor = isLight
+    ? "rgb(255 255 255 / 50%)"
+    : "rgb(0 0 0 / 50%)";
 
-  toggleIcon.children[0].textContent = "Dark Mode";
-  toggleIcon.children[1].classList.replace("fa-sun", "fa-moon");
+  textBox.style.backgroundColor = isLight
+    ? "rgb(0 0 0 / 50%)"
+    : "rgb(255 255 255 / 50%)";
 
-  imageMode("dark");
-};
+  toggleIcon.children[0].textContent = isLight ? "Light Mode" : "Dark Mode";
 
-// Light mode styles
-const lightMode = () => {
-  nav.style.backgroundColor = "rgb(255 255 255 / 50%)";
-  textBox.style.backgroundColor = "rgb(0 0 0 / 50%)";
+  isLight
+    ? toggleIcon.children[1].classList.replace("fa-moon", "fa-sun")
+    : toggleIcon.children[1].classList.replace("fa-sun", "fa-moon");
 
-  toggleIcon.children[0].textContent = "Light Mode";
-  toggleIcon.children[1].classList.replace("fa-moon", "fa-sun");
-
-  imageMode("light");
+  isLight ? imageMode("light") : imageMode("dark");
 };
 
 // switch Theme Dynamically
@@ -53,23 +42,23 @@ const switchTheme = (event) => {
     document.documentElement.setAttribute("data-theme", "dark");
     saveToLocalStorage("dark");
 
-    darkMode();
+    toggleDarkLightMode(false);
   } else {
     document.documentElement.setAttribute("data-theme", "light");
     saveToLocalStorage("light");
-    lightMode();
+    toggleDarkLightMode(true);
   }
 };
 
 // Event listener
 toggleSwitch.addEventListener("change", switchTheme);
 
-// CHeck local storage for theme
+// Check local storage for theme
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme) {
   document.documentElement.setAttribute("data-theme", savedTheme);
   if (savedTheme === "dark") {
     toggleSwitch.checked = true;
-    darkMode();
+    toggleDarkLightMode(false);
   }
 }
